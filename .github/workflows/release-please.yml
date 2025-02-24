@@ -3,7 +3,7 @@ name: "Release Generator"
 on:
   push:
     branches:
-      - main
+      - release-please-test-main
   workflow_dispatch:
 
 permissions:
