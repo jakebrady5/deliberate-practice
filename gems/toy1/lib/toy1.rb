@@ -10,7 +10,7 @@ module Toy1
     puts "I do some work!"
   end
 
-  def another_new_feature
+  def another_new_feature2
     puts "I do even more work now!"
   end
 end
