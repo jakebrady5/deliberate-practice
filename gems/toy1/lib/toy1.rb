@@ -13,4 +13,6 @@ module Toy1
   def another_new_feature3
     puts "I do even more work now!"
   end
+
+  def conflict_free_addition; end
 end
