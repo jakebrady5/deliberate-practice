@@ -37,7 +37,7 @@ jobs:
           BUNDLE_FROZEN: false
       - name: Bundle Install
         run: |
-          echo ${{ steps.release.outputs }}
+          echo ${{ toJSON(steps.release.outputs) }}
           exit 0
           git config --global user.name ${{ github.actor }}
           git config --global user.email ${{ github.actor }}@users.noreply.github.com
