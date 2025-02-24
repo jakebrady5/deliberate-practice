@@ -22,8 +22,8 @@ jobs:
         id: release
         uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f
         with:
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+          config-file: .github/workflows/release-please-config.json
+          manifest-file: .github/workflows/release-please-manifest.json
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v4
