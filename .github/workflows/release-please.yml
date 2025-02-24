@@ -25,6 +25,7 @@ jobs:
           config-file: .github/workflows/release-please-config.json
           manifest-file: .github/workflows/release-please-manifest.json
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          target-branch: release-please-test-main
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set Up Ruby
