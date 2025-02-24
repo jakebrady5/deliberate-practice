@@ -1,4 +1,4 @@
-name: "Release Please"
+name: "Release Generator"
 
 on:
   push:
@@ -22,38 +22,51 @@ jobs:
         id: release
         uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f
         with:
-          target-branch: release-please-test-main
           config-file: .github/workflows/release-please-config.json
           manifest-file: .github/workflows/release-please-manifest.json
-          token: ${{ secrets.FGP_TOKEN }}
-  release-please-output:
-    runs-on: ubuntu-latest
-    name: Release Please Output Debugging
-    needs: release-please
-    steps:
-      - run: echo '${{ needs.release-please.outputs.release_metadata }}'
-
-  gem-build-and-release:
-    runs-on: ubuntu-latest
-    name: Build and Publish Gems
-    needs: release-please
-    if: ${{ fromJSON(fromJSON(needs.release-please.outputs.release_metadata).releases_created) }}
-    strategy:
-      matrix:
-        gem_path: ${{ fromJSON(fromJSON(needs.release-please.outputs.release_metadata).paths_released) }}
-    steps:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set Up Ruby
         uses: ruby/setup-ruby@4a9ddd6f338a97768b8006bf671dfbad383215f4
         with:
-          ruby-version: 3.4
-          bundle-cache: true
-
-      - name: Publish to GPR
-        run: script/build-gem -g "${{ matrix.gem_path }}" && script/gpr-push -g "${{ matrix.gem_path }}"
+          ruby-version: 3.3
+          bundler-cache: true
         env:
-          GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
-          PUSH_HOST: "https://rubygems.pkg.github.com/${{ github.repository_owner }}"
-          BUNDLE_RUBYGEMS__PKG__GITHUB__COM: "${{ secrets.GITHUB_USER }}:${{ secrets.GITHUB_TOKEN }}"
+          BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${{ secrets.GITHUB_TOKEN }}
+          BUNDLE_FROZEN: false
+      - name: Bundle Install
+        run: |
+          echo ${{ toJSON(steps.release.outputs) }}
+          exit 0
+          git config --global user.name ${{ github.actor }}
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+          [ -z "$(git diff Gemfile.lock)" ] && exit 0
+          git add Gemfile.lock && git commit -m "bundle install" && git push origin HEAD
+
+  # gem-build-and-release:
+  #   runs-on: ubuntu-latest
+  #   name: Build and Publish Gems
+  #   needs: release-please
+  #   if: ${{ fromJSON(fromJSON(needs.release-please.outputs.release_metadata).releases_created) }}
+  #   strategy:
+  #     matrix:
+  #       gem_path: ${{ fromJSON(fromJSON(needs.release-please.outputs.release_metadata).paths_released) }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Set Up Ruby
+  #       uses: ruby/setup-ruby@4a9ddd6f338a97768b8006bf671dfbad383215f4
+  #       with:
+  #         ruby-version: 3.3
+  #         bundler-cache: true
+  #       env:
+  #         BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Publish to GPR
+  #       run: script/build-gem -g "${{ matrix.gem_path }}" && script/gpr-push -g "${{ matrix.gem_path }}"
+  #       env:
+  #         GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
+  #         PUSH_HOST: "https://rubygems.pkg.github.com/${{ github.repository_owner }}"
+  #         BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${{ secrets.GITHUB_TOKEN }}
