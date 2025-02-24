@@ -11,6 +11,6 @@ module Toy1
   end
 
   def another_new_feature
-    puts "I do even more work!"
+    puts "I do even more work now!"
   end
 end
