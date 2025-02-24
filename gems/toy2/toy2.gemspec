@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = %q{This is my super long description for this toy gem that I'm making to test a thing.}
   spec.homepage = "https://github.com/mattr-/toy-gems"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.4.0"
+  spec.required_ruby_version = ">= 3.3.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.pkg.github.com/mattr-"
   spec.metadata["homepage_uri"] = spec.homepage

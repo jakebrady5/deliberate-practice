@@ -26,6 +26,8 @@ jobs:
           config-file: .github/workflows/release-please-config.json
           manifest-file: .github/workflows/release-please-manifest.json
           token: ${{ secrets.FGP_TOKEN }}
+      - name: Bundle Install
+        run: echo working dir && pwd && bundler -v && bundle install && git add Gemfile.lock && git commit -m "bundle install"
   release-please-output:
     runs-on: ubuntu-latest
     name: Release Please Output Debugging
